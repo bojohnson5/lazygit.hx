@@ -16,8 +16,7 @@
 
 (provide lazygit-open
          lazygit-open-here
-         lazygit-close
-         set-terminal-fraction)
+         lazygit-close)
 
 ;; Directory of a file path, e.g. /a/b/c.rs -> /a/b
 (define (parent-dir path)
