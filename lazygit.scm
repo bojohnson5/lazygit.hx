@@ -31,10 +31,7 @@
 ;; then `exec` so lazygit replaces the shell and its exit closes the PTY.
 (define (lazygit-in dir)
   (if (which "lazygit")
-      (open-shell-command-in-terminal
-       "lazygit"
-       (string-append "cd " dir " && exec lazygit")
-       lazygit-reload!)
+      (open-program-in-terminal "lazygit" "lazygit" dir lazygit-reload!)
       (set-status! "lazygit: binary not found on PATH")))
 
 ;;@doc
