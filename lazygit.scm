@@ -44,9 +44,3 @@
 (define (lazygit-open-here)
   (define path (editor-document->path (editor->doc-id (editor-focus))))
   (lazygit-in (if (string? path) (parent-dir path) (helix-find-workspace))))
-
-;;@doc
-;; Close the lazygit terminal from the editor side. Normally unnecessary —
-;; pressing `q` inside lazygit closes it and triggers the reload automatically.
-(define (lazygit-close)
-  (close-command-terminal))
