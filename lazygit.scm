@@ -19,6 +19,7 @@
                  "/lazygit-hx"))
 (define *editlist* (string-append *state-dir* "/editlist"))
 (define *override-config* (string-append *state-dir* "/config.yml"))
+(define *edit-script* (string-append *state-dir* "/edit.sh"))
 
 ;;; --- find the user's lazygit config so our override merges on top ----------
 
@@ -47,18 +48,35 @@
 
 ;;; --- generated override config + edit-list handling ------------------------
 
-;; realpath makes the queued path absolute regardless of Helix's cwd vs the repo.
-(define (write-override-config!)
+(define (write-edit-script!)
   (with-handler (lambda (_) void) (create-directory! *state-dir*))
   (define el *editlist*)
   (define content
     (string-append
+     "#!/bin/sh\n"
+     "case \"$1\" in\n"
+     "  /*) f=$1 ;;\n"
+     "  *) f=$(cd \"$(dirname \"$1\")\" 2>/dev/null && pwd)/$(basename \"$1\") ;;\n"
+     "esac\n"
+     "if [ -n \"$2\" ]; then\n"
+     "  printf '%s:%s\\n' \"$f\" \"$2\" >> \"" el "\"\n"
+     "else\n"
+     "  printf '%s\\n' \"$f\" >> \"" el "\"\n"
+     "fi\n"))
+  (define p (open-output-file *edit-script* #:exists 'truncate))
+  (write-string content p)
+  (close-output-port p))
+
+(define (write-override-config!)
+  (with-handler (lambda (_) void) (create-directory! *state-dir*))
+  (define s *edit-script*)
+  (define content
+    (string-append
      "os:\n"
-     "  editPreset: \"\"\n"
      "  editInTerminal: false\n"
-     "  edit: 'printf \"%s\\n\" \"$(realpath {{filename}})\" >> \"" el "\"'\n"
-     "  editAtLine: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'\n"
-     "  editAtLineAndWait: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'\n"))
+     "  edit: 'sh " s " {{filename}}'\n"
+     "  editAtLine: 'sh " s " {{filename}} {{line}}'\n"
+     "  editAtLineAndWait: 'sh " s " {{filename}} {{line}}'\n"))
   (define p (open-output-file *override-config* #:exists 'truncate))
   (write-string content p)
   (close-output-port p))
@@ -102,6 +120,7 @@
   (if (which "lazygit")
       (begin
         (reset-editlist!)
+        (write-edit-script!)
         (write-override-config!)
         (open-program-in-terminal/args
          "lazygit" "lazygit"
