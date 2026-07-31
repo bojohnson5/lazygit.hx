@@ -88,19 +88,6 @@ the screen it takes with steel-pty's `set-terminal-fraction`, e.g. in `init.scm`
 (set-terminal-fraction 9/10)
 ```
 
-**Selection appearance.** lazygit's default `selectedLineBgColor` is `blue`, which
-renders as a solid bar. If you prefer, set it to something subtle in
-`~/.config/lazygit/config.yml` to match your Helix theme:
-
-```yaml
-gui:
-  theme:
-    selectedLineBgColor:
-      - "#45475a"
-    selectedRangeBgColor:
-      - "#45475a"
-```
-
 ## How it works
 
 lazygit is launched directly as the terminal's process (no intervening shell),
