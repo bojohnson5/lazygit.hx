@@ -102,7 +102,7 @@
         (write-override-config!)
         (open-program-in-terminal/args
          "lazygit" "lazygit"
-         (vector "--use-config-file" (config-file-arg))
+         (list "--use-config-file" (config-file-arg))
          dir
          lazygit-after!))
       (set-status! "lazygit: binary not found on PATH")))
