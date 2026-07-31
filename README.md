@@ -1,5 +1,7 @@
 # lazygit.hx
 
+<img width="1237" height="932" alt="Screenshot 2026-07-31 at 2 40 03 PM" src="https://github.com/user-attachments/assets/b79dc179-0f94-4c1b-a6b5-3c6c77b0504c" />
+
 Open [lazygit](https://github.com/jesseduffield/lazygit) in an embedded, floating
 terminal inside [Helix](https://helix-editor.com/), and automatically reload your
 open buffers when you quit. Built on top of
