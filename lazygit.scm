@@ -34,13 +34,12 @@
       (set-status! "lazygit: binary not found on PATH")))
 
 ;;@doc
-;; Open lazygit for the current workspace / project root.
+;; Open lazygit at project root.
 (define (lazygit-open)
   (lazygit-in (helix-find-workspace)))
 
 ;;@doc
-;; Open lazygit for the repository containing the current file
-;; (falls back to the workspace root when no file is focused).
+;; Open lazygit at the current file
 (define (lazygit-open-here)
   (define path (editor-document->path (editor->doc-id (editor-focus))))
   (lazygit-in (if (string? path) (parent-dir path) (helix-find-workspace))))
