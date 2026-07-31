@@ -50,7 +50,7 @@
 ;; realpath makes the queued path absolute regardless of Helix's cwd vs the repo.
 (define (write-override-config!)
   (with-handler (lambda (_) void) (create-directory! *state-dir*))
-  (define p (open-output-file *override-config*))
+  (define p (open-output-file *override-config* #:exists 'truncate))
   (define el *editlist*)
   (write-line! p "os:")
   (write-line! p "  editPreset: \"\"")
@@ -63,8 +63,8 @@
 ;; Fresh, empty edit list per session so stale entries never leak in.
 (define (reset-editlist!)
   (with-handler (lambda (_) void) (create-directory! *state-dir*))
-  (with-handler (lambda (_) void)
-    (let ([p (open-output-file *editlist*)]) (close-output-port p))))
+  (let ([p (open-output-file *editlist* #:exists 'truncate)])
+    (close-output-port p)))
 
 ;; After lazygit exits: open every queued path, cursor on the recorded line.
 (define (drain-editlist!)
