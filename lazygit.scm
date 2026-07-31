@@ -15,8 +15,7 @@
 (require (prefix-in helix. "helix/commands.scm")) ;; helix.reload-all (typable command)
 
 (provide lazygit-open
-         lazygit-open-here
-         lazygit-close)
+         lazygit-open-here)
 
 ;; Directory of a file path, e.g. /a/b/c.rs -> /a/b
 (define (parent-dir path)
