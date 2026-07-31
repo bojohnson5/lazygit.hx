@@ -50,14 +50,17 @@
 ;; realpath makes the queued path absolute regardless of Helix's cwd vs the repo.
 (define (write-override-config!)
   (with-handler (lambda (_) void) (create-directory! *state-dir*))
-  (define p (open-output-file *override-config* #:exists 'truncate))
   (define el *editlist*)
-  (write-line! p "os:")
-  (write-line! p "  editPreset: \"\"")
-  (write-line! p "  editInTerminal: false")
-  (write-line! p (string-append "  edit: 'printf \"%s\\n\" \"$(realpath {{filename}})\" >> \"" el "\"'"))
-  (write-line! p (string-append "  editAtLine: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'"))
-  (write-line! p (string-append "  editAtLineAndWait: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'"))
+  (define content
+    (string-append
+     "os:\n"
+     "  editPreset: \"\"\n"
+     "  editInTerminal: false\n"
+     "  edit: 'printf \"%s\\n\" \"$(realpath {{filename}})\" >> \"" el "\"'\n"
+     "  editAtLine: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'\n"
+     "  editAtLineAndWait: 'printf \"%s:%s\\n\" \"$(realpath {{filename}})\" {{line}} >> \"" el "\"'\n"))
+  (define p (open-output-file *override-config* #:exists 'truncate))
+  (write-string content p)
   (close-output-port p))
 
 ;; Fresh, empty edit list per session so stale entries never leak in.
