@@ -114,3 +114,7 @@ are re-read from disk.
 Built on [steel-pty](https://github.com/mattwparas/steel-pty) by
 [@mattwparas](https://github.com/mattwparas), which provides the PTY and terminal
 emulation this plugin renders into.
+[lazygit.nvim](https://github.com/kdheepak/lazygit.nvim) for the awesome neovim
+plugin that inspired this.
+
+**AI Disclosure**: Built with the assistance of Claude Opus 4.8
