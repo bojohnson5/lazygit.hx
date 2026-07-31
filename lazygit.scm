@@ -54,15 +54,24 @@
   (define content
     (string-append
      "#!/bin/sh\n"
-     "case \"$1\" in\n"
-     "  /*) f=$1 ;;\n"
-     "  *) f=$(cd \"$(dirname \"$1\")\" 2>/dev/null && pwd)/$(basename \"$1\") ;;\n"
-     "esac\n"
+     "# 1. queue the file for the plugin's on-exit hook to open\n"
      "if [ -n \"$2\" ]; then\n"
-     "  printf '%s:%s\\n' \"$f\" \"$2\" >> \"" el "\"\n"
+     "  printf '%s:%s\\n' \"$1\" \"$2\" >> \"" el "\"\n"
      "else\n"
-     "  printf '%s\\n' \"$f\" >> \"" el "\"\n"
-     "fi\n"))
+     "  printf '%s\\n' \"$1\" >> \"" el "\"\n"
+     "fi\n"
+     "# 2. terminate the lazygit that launched us so the file opens right away.\n"
+     "#    the PTY then closes, firing the plugin's reload+open drain.\n"
+     "pid=$PPID\n"
+     "while [ \"${pid:-0}\" -gt 1 ]; do\n"
+     "  set -- $(ps -o ppid=,comm= -p \"$pid\" 2>/dev/null)\n"
+     "  [ $# -ge 2 ] || break\n"
+     "  parent=$1; shift; name=$*\n"
+     "  case \"$name\" in\n"
+     "    *lazygit*) kill \"$pid\" 2>/dev/null; break ;;\n"
+     "  esac\n"
+     "  pid=$parent\n"
+     "done\n"))
   (define p (open-output-file *edit-script* #:exists 'truncate))
   (write-string content p)
   (close-output-port p))
