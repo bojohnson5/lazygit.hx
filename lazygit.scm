@@ -118,7 +118,8 @@
   (trim-end-matches path (string-append (path-separator) (file-name path))))
 
 (define (lazygit-reload!)
-  (with-handler (lambda (_) void) (helix.reload-all)))
+  (with-handler (lambda (_) void) (helix.reload-all))
+  (with-handler (lambda (_) void) (helix.lsp-restart)))
 
 ;; Reload first (git-touched buffers refresh), then open what you pressed `e` on.
 (define (lazygit-after!)
